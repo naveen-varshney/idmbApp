@@ -5,6 +5,7 @@ Flask==1.1.2
 flask-mongoengine==0.9.5
 flask-shell-ipython==0.4.1
 Flask-WTF==0.14.3
+gunicorn==20.0.4
 itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
