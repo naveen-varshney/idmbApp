@@ -1,1 +1,1 @@
-web: gunicorn IDMBAPP.run --log-file -
+web: gunicorn run:app
