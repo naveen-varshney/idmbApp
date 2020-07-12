@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask import current_app as app
 from mongoengine.errors import ValidationError, DoesNotExist
 from flask_login import login_required
 from imdbapp.api.utils import only_admin
@@ -9,6 +10,7 @@ from .schema import MovieSchema
 movie_views = Blueprint("movies", __name__, url_prefix="/api/v1/movies")
 
 
+@app.route("/", methods=["GET"])
 @movie_views.route("/", methods=["GET"])
 def movie_list():
     """
@@ -44,8 +46,9 @@ def update_movie(mov_id):
     except ValidationError as err:
         return {"errors": err.messages}, 422
 
-    Movie.objects.create(**validated_data)
-    return jsonify({"success": "Movie created successfully"})
+    user = Movie.objects.get(id=mov_id)
+    user.update
+    return jsonify({"success": "Movie updated successfully"})
 
 
 @movie_views.route("/<mov_id>/delete", methods=["DELETE"])

@@ -3,10 +3,7 @@ from pymongo import MongoClient
 from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_login import LoginManager
-from .api.v1.movies.handler import movie_views
-from .api.v1.users.handler import user_views
 
-app = Flask(__name__)
 
 MONGO_DB_HOST = os.getenv("MONGODB_URI") or "localhost"
 MONGO_DB_NAME = os.getenv("DB_NAME") or "imdbmovie"
@@ -35,6 +32,9 @@ def create_app():
         login_manager.init_app(app)
 
         # Register Blueprints
+        from .api.v1.movies.handler import movie_views
+        from .api.v1.users.handler import user_views
+
         app.register_blueprint(movie_views)
         app.register_blueprint(user_views)
         return app

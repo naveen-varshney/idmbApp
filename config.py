@@ -3,9 +3,8 @@ DEBUG = True
 
 # Define the application directory
 import os
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-MONGODB_SETTINGS = {"DB": "imdbmovie", "PORT": 27017, "HOST": "localhost"}
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Application threads. A common general assumption is
 # using 2 per available processor cores - to handle
