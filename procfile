@@ -1,2 +1,2 @@
-web: gunicorn app:imdbapp
+web: flask run
 
