@@ -21,13 +21,11 @@ login_manager.needs_refresh_message_category = "info"
 def create_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=False)
-    app.config["MONGODB_SETTINGS"] = {
-        "db": MONGO_DB_NAME,
-        "host": MONGO_DB_HOST,
-    }
+    app_settings = os.getenv("APP_SETTINGS", "config.DevelopmentConfig")
 
     with app.app_context():
         # Initialize Plugins
+        app.config.from_object(app_settings)
         db.init_app(app)
         login_manager.init_app(app)
 
