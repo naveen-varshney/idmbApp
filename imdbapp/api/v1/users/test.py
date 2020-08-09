@@ -35,7 +35,7 @@ class TestAuthBlueprint(BaseTestCase):
     def test_registration(self):
         """ Test for user registration """
         with self.client:
-            response = register_user(self, "Naveen", "joe@gmail.com", "123456")
+            response = register_user(self, "Naveen", "joe8@gmail.com", "123456")
             data = json.loads(response.data.decode())
             self.assertTrue(data["status"] == "success")
             self.assertTrue(data["message"] == "Successfully registered.")
@@ -58,26 +58,19 @@ class TestAuthBlueprint(BaseTestCase):
         """ Test for login of registered-user login """
         with self.client:
             # user registration
-            resp_register = register_user(self, "Naveen", "joe@gmail.com", "123456")
+            resp_register = login_user(self, "joe@gmail.com", "123456")
+
             data_register = json.loads(resp_register.data.decode())
             self.assertTrue(data_register["status"] == "success")
-            self.assertTrue(data_register["message"] == "Successfully registered.")
+            self.assertTrue(data_register["message"] == "Successfully logged in.")
             self.assertTrue(data_register["auth_token"])
             self.assertTrue(resp_register.content_type == "application/json")
-            self.assertEqual(resp_register.status_code, 201)
-            # registered user login
-            response = login_user(self, "joe@gmail.com", "123456")
-            data = json.loads(response.data.decode())
-            self.assertTrue(data["status"] == "success")
-            self.assertTrue(data["message"] == "Successfully logged in.")
-            self.assertTrue(data["auth_token"])
-            self.assertTrue(response.content_type == "application/json")
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(resp_register.status_code, 200)
 
     def test_non_registered_user_login(self):
         """ Test for login of non-registered user """
         with self.client:
-            response = login_user(self, "joe@gmail.com", "123456")
+            response = login_user(self, "joe1@gmail.com", "123456")
             data = json.loads(response.data.decode())
             self.assertTrue(data["status"] == "fail")
             self.assertTrue(data["message"] == "User does not exist.")

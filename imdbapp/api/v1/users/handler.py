@@ -2,7 +2,7 @@ import json
 from flask import request, jsonify, Blueprint, make_response
 from flask.views import MethodView
 from mongoengine.errors import ValidationError, DoesNotExist
-from imdbapp.api.models import User
+from imdbapp.api.models import User, UserToken
 from imdbapp.api.v1.users.schema import UserSchema
 
 user_views = Blueprint("users", __name__, url_prefix="/api/v1/users")
@@ -35,7 +35,7 @@ class RegisterAPI(MethodView):
                     email=validated_data["email"],
                     password=validated_data["password"],
                 )
-                user.is_admin = validated_data["is_admin"]
+                user.is_admin = validated_data.get("is_admin", False)
                 user.save()
 
                 # generate the auth token
@@ -45,6 +45,8 @@ class RegisterAPI(MethodView):
                     "message": "Successfully registered.",
                     "auth_token": auth_token.decode(),
                 }
+                # adding the token
+                UserToken.objects.create(token=auth_token, user=user.id)
                 return make_response(jsonify(response_data)), 201
             except Exception as e:
                 response_data = {
@@ -71,7 +73,7 @@ class LoginAPI(MethodView):
         try:
             # fetch the user data
             user = User.objects.filter(email=post_data.get("email")).first()
-            if user and user.check_password(user.password, post_data.get("password")):
+            if user and user.check_password(post_data.get("password")):
                 auth_token = user.encode_auth_token(user.id)
                 if auth_token:
                     response_data = {

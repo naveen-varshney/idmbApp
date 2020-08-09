@@ -1,15 +1,21 @@
 # idmbApp
 
 List of IMDB movies with user crud functionality.
+JWT is being used for authentication.
 
 ```bash
 pip install -r requirement.txt
 ```
 
+## Tools and Technology Used
+Flask,MongoDB,JWT,RestApis
+
 ## Usage
 
 ```python
 python run.py
+OR
+flask run
 ```
 
 ## Testing

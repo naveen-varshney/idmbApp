@@ -1,7 +1,9 @@
+import datetime
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from mongoengine import fields, Document
 from flask_login import UserMixin
+from flask import current_app as app
 
 
 class BaseDocument(Document):
@@ -16,7 +18,7 @@ class BaseDocument(Document):
 
 
 class UserToken(BaseDocument):
-    user = fields.ObjectId()
+    user = fields.ObjectIdField()
     token = fields.StringField(max_length=512, required=True)
     expires_in = fields.IntField(default=-1)
 
@@ -24,6 +26,10 @@ class UserToken(BaseDocument):
 
     def __str__(self):
         return f"{self.token} {self.expires_in}"
+
+    @property
+    def user_object(self):
+        return User.objects.filter(id=self.user).first()
 
 
 class User(UserMixin, BaseDocument):
@@ -63,7 +69,7 @@ class User(UserMixin, BaseDocument):
                 "exp": datetime.datetime.utcnow()
                 + datetime.timedelta(days=0, seconds=5),
                 "iat": datetime.datetime.utcnow(),
-                "sub": user_id,
+                "sub": str(user_id),
             }
             return jwt.encode(payload, app.config.get("SECRET_KEY"), algorithm="HS256")
         except Exception as e:
@@ -76,7 +82,7 @@ class User(UserMixin, BaseDocument):
         :param auth_token:
         :return: integer|string
         """
-        token = UserToken.objects.filter(token=token).first()
+        token = UserToken.objects.filter(token=auth_token).first()
         if not token:
             return "Invalid token."
         try:

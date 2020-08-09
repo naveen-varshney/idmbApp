@@ -29,6 +29,12 @@ def create_app():
         db.init_app(app)
         login_manager.init_app(app)
 
+        @login_manager.user_loader
+        def load_user(user_id):
+            from .api.models import User
+
+            return User.objects(id=user_id).first()
+
         # Register Blueprints
         from .api.v1.movies.handler import movie_views
         from .api.v1.users.handler import user_views

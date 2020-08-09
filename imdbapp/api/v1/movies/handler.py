@@ -25,7 +25,6 @@ def movie_list():
 
 
 @movie_views.route("/create", methods=["POST"])
-@login_required
 @only_admin
 def create_movie():
     data = request.json
